@@ -14,11 +14,11 @@ function msg(name, actual, expected) {
   return "Expected " + name + " to be " + JSON.stringify(expected) + " got " + JSON.stringify(actual) + " instead.";
 }
 
-['../test_resources/firefox_user_agent_strings.yaml', '../tests/test_ua.yaml', '../test_resources/pgts_browser_list.yaml'].forEach(function(fileName) {
+['../test_resources/firefox_user_agent_strings.yaml', '../tests/test_ua.yaml', '../test_resources/pgts_browser_list.yaml',
+  '../test_resources/opera_mini_user_agent_strings.yaml'].forEach(function(fileName) {
   var fixtures = readYAML(fileName).test_cases;
   suite(fileName, function() {
     fixtures.forEach(function(f) {
-      if (f.js_ua) return;
       test(f.user_agent_string, function() {
         var ua = refImpl.parse(f.user_agent_string).ua;
         fixFixture(f, ['major', 'minor', 'patch']);
@@ -54,7 +54,10 @@ function msg(name, actual, expected) {
     fixtures.forEach(function(f) {
       test(f.user_agent_string, function() {
         var device = refImpl.parse(f.user_agent_string).device;
+        fixFixture(f, ['family', 'brand', 'model']);
         assert.strictEqual(device.family, f.family, msg('device.family', device.family, f.family));
+        assert.strictEqual(device.brand, f.brand, msg('device.brand', device.brand, f.brand));
+        assert.strictEqual(device.model, f.model, msg('device.model', device.model, f.model));
       });
     });
   });
